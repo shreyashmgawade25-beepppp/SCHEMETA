@@ -830,24 +830,6 @@ function SchemeDetail() {
 }
 
 
-// ==========================================
-// REUSABLE INFORMATION BLOCK
-// ==========================================
-
-function Info({
-  title,
-  value,
-}: {
-  title: string;
-  value: string;
-}) {
-  return (
-    <div className="info-block">
-      <h3>{title}</h3>
-      <p>{value}</p>
-    </div>
-  );
-}
 
 // ==========================================
 // DIGITAL SKILLS ACADEMY

@@ -1,4 +1,4 @@
-
+import { useTranslation } from "react-i18next";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import {
   Link,
@@ -32,8 +32,15 @@ import type { Lesson, Scheme } from "./types";
 // MAIN APPLICATION LAYOUT
 // ==========================================
 
+
 function Shell({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth();
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (language: string) => {
+    i18n.changeLanguage(language);
+    localStorage.setItem("schemeta_language", language);
+  };
 
   return (
     <>
@@ -46,14 +53,25 @@ function Shell({ children }: { children: ReactNode }) {
         </Link>
 
         <nav>
-          <NavLink to="/schemes">Schemes</NavLink>
-          <NavLink to="/eligibility">Eligibility</NavLink>
-          <NavLink to="/academy">Academy</NavLink>
-          <NavLink to="/assistant">Assistant</NavLink>
-          <NavLink to="/community">Community</NavLink>
+          <NavLink to="/schemes">{t("nav.schemes")}</NavLink>
+          <NavLink to="/eligibility">{t("nav.eligibility")}</NavLink>
+          <NavLink to="/academy">{t("nav.academy")}</NavLink>
+          <NavLink to="/assistant">{t("nav.assistant")}</NavLink>
+          <NavLink to="/community">{t("nav.community")}</NavLink>
         </nav>
 
         <div className="nav-actions">
+          <select
+            className="language-select"
+            value={i18n.language}
+            onChange={(event) => changeLanguage(event.target.value)}
+            aria-label="Select language"
+          >
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="mr">मराठी</option>
+          </select>
+
           {user ? (
             <>
               <Link to="/dashboard" className="user-pill">
@@ -63,7 +81,7 @@ function Shell({ children }: { children: ReactNode }) {
               <button
                 className="icon-button"
                 onClick={logout}
-                title="Log out"
+                title={t("nav.logout")}
               >
                 <LogOut size={18} />
               </button>
@@ -71,11 +89,11 @@ function Shell({ children }: { children: ReactNode }) {
           ) : (
             <>
               <Link to="/login" className="text-link">
-                Log in
+                {t("nav.login")}
               </Link>
 
               <Link to="/register" className="button small">
-                Get started
+                {t("nav.getStarted")}
               </Link>
             </>
           )}
@@ -103,46 +121,46 @@ function Shell({ children }: { children: ReactNode }) {
   );
 }
 
+
 // ==========================================
 // HOME PAGE
 // ==========================================
 
 
+
 function Home() {
+  const { t } = useTranslation();
+
   return (
     <>
       <section className="hero home-hero">
         <div className="hero-copy">
           <span className="eyebrow">
             <Leaf size={15} />
-            GROW YOUR BUSINESS WITH CONFIDENCE
+            {t("home.eyebrow")}
           </span>
 
           <h1>
-            Big opportunities.
+            {t("home.title")}
             <br />
-            <em>Clear guidance.</em>
+            <em>{t("home.subtitle")}</em>
           </h1>
 
-          <p>
-            Discover government schemes, improve your digital skills,
-            connect with entrepreneurs and find the guidance you need
-            to take your business forward.
-          </p>
+          <p>{t("home.description")}</p>
 
           <div className="hero-actions">
             <Link className="button" to="/schemes">
-              Explore schemes <ArrowRight size={17} />
+              {t("home.explore")} <ArrowRight size={17} />
             </Link>
 
             <Link className="button secondary" to="/academy">
-              Start learning
+              {t("home.learn")}
             </Link>
           </div>
 
           <div className="trust-line">
             <ShieldCheck size={16} />
-            Clear information. Practical learning. Local-first approach.
+            {t("home.trust")}
           </div>
         </div>
 
@@ -152,16 +170,16 @@ function Home() {
           <div className="floating-card card-one">
             <Compass />
             <div>
-              <b>Find opportunities</b>
-              <small>Explore support options</small>
+              <b>{t("home.findTitle")}</b>
+              <small>{t("home.findDescription")}</small>
             </div>
           </div>
 
           <div className="floating-card card-two">
             <BookOpen />
             <div>
-              <b>Build digital skills</b>
-              <small>Learn at your pace</small>
+              <b>{t("home.skillsTitle")}</b>
+              <small>{t("home.skillsDescription")}</small>
             </div>
           </div>
 
@@ -171,73 +189,49 @@ function Home() {
 
           <div className="home-art-caption">
             <span>✦</span>
-            Your journey. Your growth.
+            {t("home.artCaption")}
           </div>
         </div>
       </section>
 
       <section className="home-benefit-strip">
-        <div>
-          <span className="benefit-symbol">⌕</span>
-          <div>
-            <strong>Discover</strong>
-            <small>Explore opportunities</small>
+        {["discover", "learnBenefit", "connect", "progress"].map((item, index) => (
+          <div key={item}>
+            <span className="benefit-symbol">
+              {["⌕", "▤", "◎", "↗"][index]}
+            </span>
+            <div>
+              <strong>{t(`home.benefits.${item}.title`)}</strong>
+              <small>{t(`home.benefits.${item}.description`)}</small>
+            </div>
           </div>
-        </div>
-        <div>
-          <span className="benefit-symbol">▤</span>
-          <div>
-            <strong>Learn</strong>
-            <small>Build practical skills</small>
-          </div>
-        </div>
-        <div>
-          <span className="benefit-symbol">◎</span>
-          <div>
-            <strong>Connect</strong>
-            <small>Grow with others</small>
-          </div>
-        </div>
-        <div>
-          <span className="benefit-symbol">↗</span>
-          <div>
-            <strong>Progress</strong>
-            <small>Take your next step</small>
-          </div>
-        </div>
+        ))}
       </section>
 
       <section className="section home-features">
         <div className="section-heading">
-          <span className="eyebrow">
-            ONE PLATFORM, MANY POSSIBILITIES
-          </span>
-
-          <h2>Everything you need to move forward</h2>
-
-          <p>
-            Practical tools designed around the everyday needs of
-            entrepreneurs.
-          </p>
+          <span className="eyebrow">{t("home.featuresEyebrow")}</span>
+          <h2>{t("home.featuresTitle")}</h2>
+          <p>{t("home.featuresDescription")}</p>
         </div>
 
         <div className="feature-grid">
           <Feature
             icon={<Compass />}
-            title="Discover schemes"
-            body="Explore scheme information, eligibility guidance and application steps."
+            title={t("home.feature1Title")}
+            body={t("home.feature1Description")}
           />
 
           <Feature
             icon={<BookOpen />}
-            title="Learn digital skills"
-            body="Build confidence with practical lessons for running a business online."
+            title={t("home.feature2Title")}
+            body={t("home.feature2Description")}
           />
 
           <Feature
             icon={<MessageCircle />}
-            title="Get guidance"
-            body="Ask questions and find clear next steps in your preferred language."
+            title={t("home.feature3Title")}
+            body={t("home.feature3Description")}
           />
         </div>
 
@@ -245,27 +239,27 @@ function Home() {
           <Link to="/eligibility" className="home-extra-card">
             <span className="home-extra-icon">✓</span>
             <div>
-              <h3>Check your eligibility</h3>
-              <p>Explore schemes that may match your business profile.</p>
-              <strong>Check eligibility <ArrowRight size={15} /></strong>
+              <h3>{t("home.eligibilityTitle")}</h3>
+              <p>{t("home.eligibilityDescription")}</p>
+              <strong>{t("home.eligibilityLink")} <ArrowRight size={15} /></strong>
             </div>
           </Link>
 
           <Link to="/community" className="home-extra-card">
             <span className="home-extra-icon">◎</span>
             <div>
-              <h3>Join the community</h3>
-              <p>Share experiences, exchange ideas and learn together.</p>
-              <strong>Explore community <ArrowRight size={15} /></strong>
+              <h3>{t("home.communityTitle")}</h3>
+              <p>{t("home.communityDescription")}</p>
+              <strong>{t("home.communityLink")} <ArrowRight size={15} /></strong>
             </div>
           </Link>
 
           <Link to="/dashboard" className="home-extra-card">
             <span className="home-extra-icon">▦</span>
             <div>
-              <h3>Your personal dashboard</h3>
-              <p>Keep your saved opportunities and learning progress organised.</p>
-              <strong>View dashboard <ArrowRight size={15} /></strong>
+              <h3>{t("home.dashboardTitle")}</h3>
+              <p>{t("home.dashboardDescription")}</p>
+              <strong>{t("home.dashboardLink")} <ArrowRight size={15} /></strong>
             </div>
           </Link>
         </div>
@@ -273,64 +267,40 @@ function Home() {
 
       <section className="home-how-section">
         <div className="section-heading">
-          <span className="eyebrow">GETTING STARTED</span>
-          <h2>Your journey starts with three simple steps</h2>
-          <p>
-            SCHEMETA brings useful information and practical learning
-            together in one place.
-          </p>
+          <span className="eyebrow">{t("home.stepsEyebrow")}</span>
+          <h2>{t("home.stepsTitle")}</h2>
+          <p>{t("home.stepsDescription")}</p>
         </div>
 
         <div className="home-steps">
-          <div className="home-step">
-            <span className="home-step-number">01</span>
-            <div className="home-step-icon">⌕</div>
-            <h3>Explore</h3>
-            <p>
-              Discover government schemes and opportunities relevant
-              to your business.
-            </p>
-          </div>
-
-          <div className="home-step">
-            <span className="home-step-number">02</span>
-            <div className="home-step-icon">▤</div>
-            <h3>Understand</h3>
-            <p>
-              Learn about eligibility, required documents and practical
-              digital business skills.
-            </p>
-          </div>
-
-          <div className="home-step">
-            <span className="home-step-number">03</span>
-            <div className="home-step-icon">↗</div>
-            <h3>Take action</h3>
-            <p>
-              Use the information and resources to plan your next
-              business step.
-            </p>
-          </div>
+          {["explore", "understand", "action"].map((step, index) => (
+            <div className="home-step" key={step}>
+              <span className="home-step-number">0{index + 1}</span>
+              <div className="home-step-icon">
+                {["⌕", "▤", "↗"][index]}
+              </div>
+              <h3>{t(`home.steps.${step}.title`)}</h3>
+              <p>{t(`home.steps.${step}.description`)}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       <section className="home-cta">
         <div>
-          <span className="eyebrow">YOUR NEXT STEP STARTS HERE</span>
-          <h2>Ready to discover what's possible?</h2>
-          <p>
-            Start exploring opportunities, learn something new and
-            take your business forward with SCHEMETA.
-          </p>
+          <span className="eyebrow">{t("home.ctaEyebrow")}</span>
+          <h2>{t("home.ctaTitle")}</h2>
+          <p>{t("home.ctaDescription")}</p>
         </div>
 
         <Link className="button home-cta-button" to="/schemes">
-          Explore SCHEMETA <ArrowRight size={17} />
+          {t("home.ctaButton")} <ArrowRight size={17} />
         </Link>
       </section>
     </>
   );
 }
+
 
 
 // ==========================================
@@ -360,7 +330,10 @@ function Feature({
 // ==========================================
 
 
+
 function Schemes() {
+  const { t } = useTranslation();
+
   const [items, setItems] = useState<Scheme[]>([]);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
@@ -377,14 +350,12 @@ function Schemes() {
           setError("");
         })
         .catch(() => {
-          setError(
-            "Could not load schemes. Check that the backend and database are running."
-          );
+          setError(t("schemes.error"));
         });
     }, 250);
 
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, t]);
 
   const categories = [
     "All",
@@ -402,26 +373,23 @@ function Schemes() {
         <div className="schemes-hero-content">
           <span className="eyebrow">
             <span className="live-dot" />
-            SCHEMETA · OPPORTUNITY EXPLORER
+            {t("schemes.eyebrow")}
           </span>
 
           <h1>
-            Find the right support.
+            {t("schemes.heroTitle")}
             <br />
-            <em>Build your next chapter.</em>
+            <em>{t("schemes.heroSubtitle")}</em>
           </h1>
 
-          <p>
-            Explore government schemes, financial assistance and
-            opportunities that can help your business grow.
-          </p>
+          <p>{t("schemes.heroDescription")}</p>
 
           <div className="schemes-trust">
-            <span>Discover opportunities</span>
+            <span>{t("schemes.trust1")}</span>
             <span className="trust-separator">·</span>
-            <span>Understand eligibility</span>
+            <span>{t("schemes.trust2")}</span>
             <span className="trust-separator">·</span>
-            <span>Explore benefits</span>
+            <span>{t("schemes.trust3")}</span>
           </div>
         </div>
 
@@ -430,21 +398,21 @@ function Schemes() {
           <div className="visual-orbit orbit-two" />
           <div className="visual-center">
             <span className="visual-leaf">✳</span>
-            <strong>Grow</strong>
-            <small>with the right support</small>
+            <strong>{t("schemes.grow")}</strong>
+            <small>{t("schemes.growDescription")}</small>
           </div>
           <div className="visual-note note-top">
             <span>✦</span>
             <div>
-              <b>Explore</b>
-              <small>New opportunities</small>
+              <b>{t("schemes.explore")}</b>
+              <small>{t("schemes.newOpportunities")}</small>
             </div>
           </div>
           <div className="visual-note note-bottom">
             <span>↗</span>
             <div>
-              <b>Move forward</b>
-              <small>One step at a time</small>
+              <b>{t("schemes.moveForward")}</b>
+              <small>{t("schemes.oneStep")}</small>
             </div>
           </div>
         </div>
@@ -453,14 +421,14 @@ function Schemes() {
       <div className="schemes-toolbar">
         <div className="schemes-toolbar-heading">
           <div>
-            <span className="eyebrow">YOUR OPPORTUNITIES</span>
-            <h2>Explore schemes</h2>
-            <p>Find support that matches your goals.</p>
+            <span className="eyebrow">{t("schemes.opportunities")}</span>
+            <h2>{t("schemes.exploreSchemes")}</h2>
+            <p>{t("schemes.toolbarDescription")}</p>
           </div>
 
           <div className="scheme-count">
             <strong>{filteredItems.length}</strong>
-            <span>schemes found</span>
+            <span>{t("schemes.schemesFound")}</span>
           </div>
         </div>
 
@@ -472,14 +440,14 @@ function Schemes() {
               setQuery(event.target.value);
               setActiveCategory("All");
             }}
-            placeholder="Search by scheme name, business need or category..."
+            placeholder={t("schemes.searchPlaceholder")}
           />
           {query && (
             <button
               type="button"
               className="clear-search"
               onClick={() => setQuery("")}
-              aria-label="Clear search"
+              aria-label={t("schemes.clearSearch")}
             >
               ×
             </button>
@@ -487,7 +455,7 @@ function Schemes() {
         </label>
 
         <div className="scheme-filters">
-          <span className="filter-label">CATEGORIES</span>
+          <span className="filter-label">{t("schemes.categories")}</span>
           <div className="filter-chips">
             {categories.map((category) => (
               <button
@@ -498,7 +466,7 @@ function Schemes() {
                 }`}
                 onClick={() => setActiveCategory(category)}
               >
-                {category}
+                {category === "All" ? t("schemes.all") : category}
               </button>
             ))}
           </div>
@@ -523,16 +491,14 @@ function Schemes() {
               </span>
             </div>
 
-            <span className="scheme-category">
-              {scheme.category}
-            </span>
+            <span className="scheme-category">{scheme.category}</span>
 
             <h3>{scheme.name}</h3>
 
             <p>{scheme.summary}</p>
 
             <div className="enhanced-card-footer">
-              <span>Explore scheme</span>
+              <span>{t("schemes.exploreScheme")}</span>
               <span className="scheme-arrow">
                 <ArrowRight size={17} />
               </span>
@@ -544,8 +510,8 @@ function Schemes() {
       {!filteredItems.length && !error && (
         <div className="schemes-empty">
           <div className="empty-symbol">⌕</div>
-          <h3>No matching schemes found</h3>
-          <p>Try another search or choose a different category.</p>
+          <h3>{t("schemes.noResults")}</h3>
+          <p>{t("schemes.noResultsDescription")}</p>
           <button
             className="button secondary"
             onClick={() => {
@@ -553,22 +519,19 @@ function Schemes() {
               setActiveCategory("All");
             }}
           >
-            Clear filters
+            {t("schemes.clearFilters")}
           </button>
         </div>
       )}
 
       <div className="schemes-disclaimer">
         <span>ⓘ</span>
-        <p>
-          Scheme information is provided for discovery and learning.
-          Always check the official government source for current
-          eligibility, benefits and application requirements before applying.
-        </p>
+        <p>{t("schemes.disclaimer")}</p>
       </div>
     </section>
   );
 }
+
 
 
 // ==========================================
@@ -576,8 +539,10 @@ function Schemes() {
 // ==========================================
 
 
+
 function SchemeDetail() {
   const { id } = useParams();
+  const { t } = useTranslation();
 
   const [item, setItem] = useState<Scheme | null>(null);
   const [message, setMessage] = useState("");
@@ -590,8 +555,8 @@ function SchemeDetail() {
     api
       .get(`/api/schemes/${id}`)
       .then((response) => setItem(response.data))
-      .catch(() => setMessage("Scheme could not be found."));
-  }, [id]);
+      .catch(() => setMessage(t("schemeDetail.notFound")));
+  }, [id, t]);
 
   const save = async () => {
     if (saving) return;
@@ -601,9 +566,9 @@ function SchemeDetail() {
 
     try {
       await api.post(`/api/schemes/${id}/save`);
-      setMessage("Scheme saved to your account successfully.");
+      setMessage(t("schemeDetail.saved"));
     } catch {
-      setMessage("Please log in to save this scheme.");
+      setMessage(t("schemeDetail.loginRequired"));
     } finally {
       setSaving(false);
     }
@@ -613,10 +578,10 @@ function SchemeDetail() {
     return (
       <section className="page">
         <div className="detail-error">
-          <h2>Scheme unavailable</h2>
+          <h2>{t("schemeDetail.unavailable")}</h2>
           <p>{message}</p>
           <Link to="/schemes" className="button">
-            Back to schemes
+            {t("schemeDetail.backToSchemes")}
           </Link>
         </div>
       </section>
@@ -626,7 +591,9 @@ function SchemeDetail() {
   if (!item) {
     return (
       <section className="page">
-        <div className="detail-loading">Loading scheme details...</div>
+        <div className="detail-loading">
+          {t("schemeDetail.loading")}
+        </div>
       </section>
     );
   }
@@ -634,29 +601,29 @@ function SchemeDetail() {
   const sections = [
     {
       number: "01",
-      title: "Eligibility",
-      subtitle: "Who can apply",
+      title: t("schemeDetail.eligibility"),
+      subtitle: t("schemeDetail.eligibilitySubtitle"),
       icon: "✓",
       value: item.eligibility,
     },
     {
       number: "02",
-      title: "Benefits",
-      subtitle: "What support is offered",
+      title: t("schemeDetail.benefits"),
+      subtitle: t("schemeDetail.benefitsSubtitle"),
       icon: "₹",
       value: item.benefits,
     },
     {
       number: "03",
-      title: "Required documents",
-      subtitle: "Keep these documents ready",
+      title: t("schemeDetail.documents"),
+      subtitle: t("schemeDetail.documentsSubtitle"),
       icon: "▤",
       value: item.documents,
     },
     {
       number: "04",
-      title: "Application process",
-      subtitle: "Steps to get started",
+      title: t("schemeDetail.process"),
+      subtitle: t("schemeDetail.processSubtitle"),
       icon: "↗",
       value: item.application_steps,
     },
@@ -665,7 +632,7 @@ function SchemeDetail() {
   return (
     <section className="page scheme-detail-page">
       <Link to="/schemes" className="detail-back">
-        <span>←</span> Back to all schemes
+        <span>←</span> {t("schemeDetail.back")}
       </Link>
 
       <div className="detail-hero">
@@ -677,14 +644,16 @@ function SchemeDetail() {
             </span>
           </div>
 
-          <span className="eyebrow">SCHEME OVERVIEW</span>
+          <span className="eyebrow">
+            {t("schemeDetail.overview")}
+          </span>
 
           <h1>{item.name}</h1>
 
           <p className="detail-summary">{item.summary}</p>
 
           <div className="detail-hero-bottom">
-            <span>Explore the scheme details below</span>
+            <span>{t("schemeDetail.exploreBelow")}</span>
             <span>↓</span>
           </div>
         </div>
@@ -692,14 +661,14 @@ function SchemeDetail() {
         <div className="detail-hero-art">
           <div className="detail-art-circle">
             <span>✳</span>
-            <strong>Opportunity</strong>
-            <small>Start with the right information</small>
+            <strong>{t("schemeDetail.opportunity")}</strong>
+            <small>{t("schemeDetail.startWithInfo")}</small>
           </div>
           <div className="detail-art-tag">
             <span>✓</span>
             <div>
-              <b>Understand</b>
-              <small>Before you apply</small>
+              <b>{t("schemeDetail.understand")}</b>
+              <small>{t("schemeDetail.beforeApplying")}</small>
             </div>
           </div>
         </div>
@@ -708,12 +677,11 @@ function SchemeDetail() {
       <div className="detail-verification">
         <ShieldCheck size={20} />
         <div>
-          <strong>Information and verification notice</strong>
+          <strong>{t("schemeDetail.verificationTitle")}</strong>
           <p>
-            This record is currently marked as{" "}
-            <b>{item.verification_status}</b>. Confirm the latest
-            eligibility, benefits and application details through an
-            official source before relying on this information.
+            {t("schemeDetail.verificationDescription")}{" "}
+            <b>{item.verification_status}</b>.{" "}
+            {t("schemeDetail.verificationReminder")}
           </p>
         </div>
       </div>
@@ -721,12 +689,11 @@ function SchemeDetail() {
       <div className="detail-layout">
         <div className="detail-main">
           <div className="detail-section-heading">
-            <span className="eyebrow">UNDERSTANDING THE SCHEME</span>
-            <h2>Everything you need to know</h2>
-            <p>
-              Review the information below before proceeding with an
-              application.
-            </p>
+            <span className="eyebrow">
+              {t("schemeDetail.understanding")}
+            </span>
+            <h2>{t("schemeDetail.everythingToKnow")}</h2>
+            <p>{t("schemeDetail.reviewInformation")}</p>
           </div>
 
           <div className="detail-info-grid">
@@ -744,7 +711,9 @@ function SchemeDetail() {
                   {section.subtitle}
                 </span>
 
-                <p>{section.value || "Information not provided."}</p>
+                <p>
+                  {section.value || t("schemeDetail.notProvided")}
+                </p>
               </article>
             ))}
           </div>
@@ -752,19 +721,20 @@ function SchemeDetail() {
 
         <aside className="detail-sidebar">
           <div className="detail-action-card">
-            <span className="eyebrow">KEEP THIS OPPORTUNITY</span>
-            <h3>Save this scheme</h3>
-            <p>
-              Keep this scheme in your account so you can revisit its
-              information later.
-            </p>
+            <span className="eyebrow">
+              {t("schemeDetail.keepOpportunity")}
+            </span>
+            <h3>{t("schemeDetail.saveTitle")}</h3>
+            <p>{t("schemeDetail.saveDescription")}</p>
 
             <button
               className="button detail-save-button"
               onClick={save}
               disabled={saving}
             >
-              {saving ? "Saving..." : "♡  Save scheme"}
+              {saving
+                ? t("schemeDetail.saving")
+                : `♡  ${t("schemeDetail.saveButton")}`}
             </button>
 
             {message && (
@@ -775,16 +745,20 @@ function SchemeDetail() {
           </div>
 
           <div className="detail-source-card">
-            <span className="eyebrow">SOURCE INFORMATION</span>
-            <h3>Where to find more</h3>
+            <span className="eyebrow">
+              {t("schemeDetail.sourceInfo")}
+            </span>
+            <h3>{t("schemeDetail.sourceTitle")}</h3>
 
             <div className="detail-source-row">
-              <span>Source</span>
-              <strong>{item.source_name || "Not provided"}</strong>
+              <span>{t("schemeDetail.source")}</span>
+              <strong>
+                {item.source_name || t("schemeDetail.notProvided")}
+              </strong>
             </div>
 
             <div className="detail-source-row">
-              <span>Record status</span>
+              <span>{t("schemeDetail.recordStatus")}</span>
               <strong>{item.verification_status}</strong>
             </div>
 
@@ -795,11 +769,11 @@ function SchemeDetail() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Visit official website <span>↗</span>
+                {t("schemeDetail.visitOfficial")} <span>↗</span>
               </a>
             ) : (
               <p className="detail-no-link">
-                An official website link has not been provided.
+                {t("schemeDetail.noOfficialLink")}
               </p>
             )}
           </div>
@@ -807,11 +781,8 @@ function SchemeDetail() {
           <div className="detail-help-card">
             <span>✦</span>
             <div>
-              <strong>Take your time</strong>
-              <p>
-                Review the requirements and verify the information
-                before submitting an application.
-              </p>
+              <strong>{t("schemeDetail.takeYourTime")}</strong>
+              <p>{t("schemeDetail.takeYourTimeDescription")}</p>
             </div>
           </div>
         </aside>
@@ -819,15 +790,12 @@ function SchemeDetail() {
 
       <div className="detail-bottom-note">
         <ShieldCheck size={18} />
-        <p>
-          SCHEMETA helps you discover opportunities. Final approval,
-          eligibility and programme availability are determined by the
-          respective government authorities.
-        </p>
+        <p>{t("schemeDetail.finalNotice")}</p>
       </div>
     </section>
   );
 }
+
 
 
 
@@ -837,7 +805,9 @@ function SchemeDetail() {
 
 
 
+
 function Academy() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<Lesson[]>([]);
   const [completedIds, setCompletedIds] = useState<number[]>([]);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
@@ -857,9 +827,7 @@ function Academy() {
         ]);
 
         setItems(lessonsResponse.data);
-        setCompletedIds(
-          progressResponse.data.completed_lesson_ids || []
-        );
+        setCompletedIds(progressResponse.data.completed_lesson_ids || []);
       } catch (error) {
         console.error("Academy loading error:", error);
         setItems([]);
@@ -878,14 +846,12 @@ function Academy() {
       await api.post(`/api/lessons/${lessonId}/complete`);
 
       setCompletedIds((previous) =>
-        previous.includes(lessonId)
-          ? previous
-          : [...previous, lessonId]
+        previous.includes(lessonId) ? previous : [...previous, lessonId]
       );
 
-      setActionMessage("Your learning progress has been updated.");
+      setActionMessage(t("academy.progressUpdated"));
     } catch {
-      setActionMessage("Please log in to save your learning progress.");
+      setActionMessage(t("academy.loginRequired"));
     }
   };
 
@@ -899,19 +865,17 @@ function Academy() {
 
   const categories = [
     "All",
-    ...Array.from(
-      new Set(items.map((lesson) => lesson.category).filter(Boolean))
-    ),
+    ...Array.from(new Set(items.map((lesson) => lesson.category).filter(Boolean))),
   ];
 
   const filteredLessons = items.filter((lesson) => {
     const matchesCategory =
       activeCategory === "All" || lesson.category === activeCategory;
 
-    const searchText = `${lesson.title} ${lesson.category} ${lesson.level}`.toLowerCase();
-    const matchesSearch = searchText.includes(query.toLowerCase());
+    const searchText =
+      `${lesson.title} ${lesson.category} ${lesson.level}`.toLowerCase();
 
-    return matchesCategory && matchesSearch;
+    return matchesCategory && searchText.includes(query.toLowerCase());
   });
 
   const openLesson = (lesson: Lesson) => {
@@ -931,7 +895,7 @@ function Academy() {
               setActionMessage("");
             }}
           >
-            ← Back to all lessons
+            ← {t("academy.back")}
           </button>
 
           <div className="academy-reader-hero">
@@ -941,27 +905,22 @@ function Academy() {
 
             <h1>{selectedLesson.title}</h1>
 
-            <p>
-              Take your time, learn at your own pace and build skills
-              you can use in your business.
-            </p>
+            <p>{t("academy.readerDescription")}</p>
 
             <div className="academy-reader-meta">
-              <span>
-                <BookOpen size={15} /> Learning module
-              </span>
+              <span><BookOpen size={15} /> {t("academy.module")}</span>
               <span>
                 {completedIds.includes(selectedLesson.id)
-                  ? "Completed"
-                  : "In progress"}
+                  ? t("academy.completed")
+                  : t("academy.inProgress")}
               </span>
             </div>
           </div>
 
           <article className="academy-reader-content">
             <div className="academy-reader-content-heading">
-              <span className="eyebrow">LESSON CONTENT</span>
-              <h2>What you'll learn</h2>
+              <span className="eyebrow">{t("academy.lessonContent")}</span>
+              <h2>{t("academy.whatLearn")}</h2>
             </div>
 
             <div className="lesson-reader-content">
@@ -972,14 +931,14 @@ function Academy() {
               {completedIds.includes(selectedLesson.id) ? (
                 <span className="completed-label">
                   <CheckCircle2 size={17} />
-                  Lesson completed
+                  {t("academy.lessonCompleted")}
                 </span>
               ) : (
                 <button
                   className="button"
                   onClick={() => markComplete(selectedLesson.id)}
                 >
-                  Mark lesson complete
+                  {t("academy.markComplete")}
                   <CheckCircle2 size={16} />
                 </button>
               )}
@@ -998,24 +957,21 @@ function Academy() {
             <div className="academy-hero-copy">
               <span className="eyebrow">
                 <span className="live-dot" />
-                SCHEMETA · DIGITAL SKILLS ACADEMY
+                {t("academy.eyebrow")}
               </span>
 
               <h1>
-                Learn today.
+                {t("academy.heroTitle")}
                 <br />
-                <em>Grow tomorrow.</em>
+                <em>{t("academy.heroSubtitle")}</em>
               </h1>
 
-              <p>
-                Build practical digital skills, strengthen your
-                business knowledge and learn at your own pace.
-              </p>
+              <p>{t("academy.heroDescription")}</p>
 
               <div className="academy-hero-points">
-                <span>✓ Practical lessons</span>
-                <span>✓ Self-paced learning</span>
-                <span>✓ Track your progress</span>
+                <span>✓ {t("academy.point1")}</span>
+                <span>✓ {t("academy.point2")}</span>
+                <span>✓ {t("academy.point3")}</span>
               </div>
             </div>
 
@@ -1025,15 +981,15 @@ function Academy() {
 
               <div className="academy-hero-center">
                 <BookOpen size={34} />
-                <strong>Learn</strong>
-                <small>One lesson at a time</small>
+                <strong>{t("academy.learn")}</strong>
+                <small>{t("academy.oneLesson")}</small>
               </div>
 
               <div className="academy-floating-note">
                 <CheckCircle2 size={18} />
                 <div>
-                  <b>Keep progressing</b>
-                  <small>Your learning journey</small>
+                  <b>{t("academy.keepProgressing")}</b>
+                  <small>{t("academy.learningJourney")}</small>
                 </div>
               </div>
             </div>
@@ -1044,19 +1000,17 @@ function Academy() {
               <div className="academy-loading-icon">
                 <BookOpen size={25} />
               </div>
-              <h3>Preparing your learning space</h3>
-              <p>Loading available lessons and your progress...</p>
+              <h3>{t("academy.preparing")}</h3>
+              <p>{t("academy.loading")}</p>
             </div>
           ) : (
             <>
               <div className="academy-progress">
                 <div className="academy-progress-top">
                   <div>
-                    <span className="eyebrow">YOUR LEARNING JOURNEY</span>
-                    <h3>Every lesson is a step forward.</h3>
-                    <p>
-                      Keep learning and build your digital confidence.
-                    </p>
+                    <span className="eyebrow">{t("academy.journey")}</span>
+                    <h3>{t("academy.everyLesson")}</h3>
+                    <p>{t("academy.progressDescription")}</p>
                   </div>
 
                   <strong>{progress}%</strong>
@@ -1070,26 +1024,24 @@ function Academy() {
                 </div>
 
                 <div className="progress-caption">
-                  <span>{completedCount} completed</span>
+                  <span>{completedCount} {t("academy.completedCount")}</span>
                   <span>
-                    {Math.max(items.length - completedCount, 0)} remaining
+                    {Math.max(items.length - completedCount, 0)} {t("academy.remaining")}
                   </span>
-                  <span>{items.length} total lessons</span>
+                  <span>{items.length} {t("academy.totalLessons")}</span>
                 </div>
               </div>
 
               <div className="academy-library-heading">
                 <div>
-                  <span className="eyebrow">EXPLORE AND LEARN</span>
-                  <h2>Your learning library</h2>
-                  <p>
-                    Choose a topic and start building practical skills.
-                  </p>
+                  <span className="eyebrow">{t("academy.exploreLearn")}</span>
+                  <h2>{t("academy.library")}</h2>
+                  <p>{t("academy.libraryDescription")}</p>
                 </div>
 
                 <div className="academy-total-count">
                   <strong>{filteredLessons.length}</strong>
-                  <span>lessons</span>
+                  <span>{t("academy.lessons")}</span>
                 </div>
               </div>
 
@@ -1098,13 +1050,13 @@ function Academy() {
                 <input
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search lessons, topics or skill levels..."
+                  placeholder={t("academy.searchPlaceholder")}
                 />
                 {query && (
                   <button
                     type="button"
                     onClick={() => setQuery("")}
-                    aria-label="Clear search"
+                    aria-label={t("academy.clearSearch")}
                   >
                     ×
                   </button>
@@ -1121,7 +1073,7 @@ function Academy() {
                     }`}
                     onClick={() => setActiveCategory(category)}
                   >
-                    {category}
+                    {category === "All" ? t("academy.all") : category}
                   </button>
                 ))}
               </div>
@@ -1138,10 +1090,7 @@ function Academy() {
                     const isCompleted = completedIds.includes(lesson.id);
 
                     return (
-                      <article
-                        className="academy-lesson-card"
-                        key={lesson.id}
-                      >
+                      <article className="academy-lesson-card" key={lesson.id}>
                         <div className="academy-lesson-card-top">
                           <span className="academy-lesson-icon">
                             <BookOpen size={21} />
@@ -1150,7 +1099,7 @@ function Academy() {
                           {isCompleted ? (
                             <span className="completed-badge">
                               <CheckCircle2 size={14} />
-                              Completed
+                              {t("academy.completed")}
                             </span>
                           ) : (
                             <span className="academy-lesson-number">
@@ -1176,7 +1125,7 @@ function Academy() {
                             className="button secondary small"
                             onClick={() => openLesson(lesson)}
                           >
-                            Read lesson <ArrowRight size={14} />
+                            {t("academy.readLesson")} <ArrowRight size={14} />
                           </button>
 
                           {isCompleted && (
@@ -1193,10 +1142,8 @@ function Academy() {
               ) : (
                 <div className="academy-no-results">
                   <BookOpen size={30} />
-                  <h3>No lessons found</h3>
-                  <p>
-                    Try another search or select a different category.
-                  </p>
+                  <h3>{t("academy.noLessonsFound")}</h3>
+                  <p>{t("academy.noLessonsDescription")}</p>
                   <button
                     className="button secondary"
                     onClick={() => {
@@ -1204,7 +1151,7 @@ function Academy() {
                       setActiveCategory("All");
                     }}
                   >
-                    Clear filters
+                    {t("academy.clearFilters")}
                   </button>
                 </div>
               )}
@@ -1212,11 +1159,8 @@ function Academy() {
               {!items.length && (
                 <div className="academy-no-results">
                   <BookOpen size={30} />
-                  <h3>No lessons available yet</h3>
-                  <p>
-                    Learning content will appear here when it becomes
-                    available.
-                  </p>
+                  <h3>{t("academy.noLessonsAvailable")}</h3>
+                  <p>{t("academy.noLessonsYet")}</p>
                 </div>
               )}
             </>
@@ -1229,12 +1173,16 @@ function Academy() {
 
 
 
+
 // ==========================================
 // ELIGIBILITY CHECKER
 // ==========================================
 
 
+
 function Eligibility() {
+  const { t } = useTranslation();
+
   const [state, setState] = useState("Maharashtra");
   const [category, setCategory] = useState("Small business");
   const [result, setResult] = useState<any>(null);
@@ -1242,7 +1190,6 @@ function Eligibility() {
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
-
     setLoading(true);
     setResult(null);
 
@@ -1255,8 +1202,7 @@ function Eligibility() {
       setResult(response.data);
     } catch {
       setResult({
-        error:
-          "Unable to check eligibility. Please try again when the API is available.",
+        error: t("eligibility.apiError"),
       });
     } finally {
       setLoading(false);
@@ -1269,30 +1215,47 @@ function Eligibility() {
     setCategory("Small business");
   };
 
+  const categories = [
+    ["Small business", "smallBusiness"],
+    ["Entrepreneurship", "entrepreneurship"],
+    ["Food Processing", "foodProcessing"],
+    ["Manufacturing", "manufacturing"],
+    ["Agriculture", "agriculture"],
+    ["Retail", "retail"],
+    ["Services", "services"],
+    ["Women entrepreneur", "womenEntrepreneur"],
+    ["Other", "other"],
+  ];
+
+  const states = [
+    "Maharashtra", "Gujarat", "Goa", "Madhya Pradesh",
+    "Karnataka", "Rajasthan", "Uttar Pradesh", "Other",
+  ];
+
+  const selectedCategoryKey =
+  categories.find(([value]) => value === category)?.[1] || "other";
+
   return (
     <section className="page eligibility-page">
       <div className="eligibility-hero">
         <div className="eligibility-hero-copy">
           <span className="eyebrow">
             <span className="live-dot" />
-            SMART ELIGIBILITY ASSISTANT
+            {t("eligibility.eyebrow")}
           </span>
 
           <h1>
-            Find support that
+            {t("eligibility.heroTitle")}
             <br />
-            <em>fits your business.</em>
+            <em>{t("eligibility.heroSubtitle")}</em>
           </h1>
 
-          <p>
-            Answer a couple of simple questions and discover government
-            scheme records that may be relevant to your business.
-          </p>
+          <p>{t("eligibility.heroDescription")}</p>
 
           <div className="eligibility-points">
-            <span>✓ Simple assessment</span>
-            <span>✓ Relevant scheme matches</span>
-            <span>✓ Clear explanations</span>
+            <span>✓ {t("eligibility.point1")}</span>
+            <span>✓ {t("eligibility.point2")}</span>
+            <span>✓ {t("eligibility.point3")}</span>
           </div>
         </div>
 
@@ -1301,14 +1264,14 @@ function Eligibility() {
           <div className="eligibility-visual-ring ring-two" />
           <div className="eligibility-visual-center">
             <span>✓</span>
-            <strong>Discover</strong>
-            <small>Your opportunities</small>
+            <strong>{t("eligibility.discover")}</strong>
+            <small>{t("eligibility.opportunities")}</small>
           </div>
           <div className="eligibility-floating-note">
             <span>✦</span>
             <div>
-              <b>Personalised search</b>
-              <small>Based on your details</small>
+              <b>{t("eligibility.personalised")}</b>
+              <small>{t("eligibility.basedOnDetails")}</small>
             </div>
           </div>
         </div>
@@ -1317,19 +1280,16 @@ function Eligibility() {
       <div className="eligibility-workspace">
         <div className="eligibility-form-panel">
           <div className="eligibility-panel-heading">
-            <span className="eyebrow">YOUR BUSINESS PROFILE</span>
-            <h2>Let's get to know your business.</h2>
-            <p>
-              Provide the details below to find potentially relevant
-              scheme records.
-            </p>
+            <span className="eyebrow">{t("eligibility.profile")}</span>
+            <h2>{t("eligibility.formTitle")}</h2>
+            <p>{t("eligibility.formDescription")}</p>
           </div>
 
           <form className="eligibility-form" onSubmit={submit}>
             <div className="eligibility-field">
               <label htmlFor="eligibility-state">
                 <span className="field-icon">⌖</span>
-                Your state
+                {t("eligibility.state")}
               </label>
 
               <select
@@ -1338,25 +1298,20 @@ function Eligibility() {
                 onChange={(event) => setState(event.target.value)}
                 required
               >
-                <option value="Maharashtra">Maharashtra</option>
-                <option value="Gujarat">Gujarat</option>
-                <option value="Goa">Goa</option>
-                <option value="Madhya Pradesh">Madhya Pradesh</option>
-                <option value="Karnataka">Karnataka</option>
-                <option value="Rajasthan">Rajasthan</option>
-                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                <option value="Other">Other</option>
+                {states.map((value) => (
+                  <option value={value} key={value}>
+                    {t(`eligibility.states.${value}`)}
+                  </option>
+                ))}
               </select>
 
-              <small>
-                Select the state where your business operates.
-              </small>
+              <small>{t("eligibility.stateHelp")}</small>
             </div>
 
             <div className="eligibility-field">
               <label htmlFor="eligibility-category">
                 <span className="field-icon">▦</span>
-                Business category
+                {t("eligibility.category")}
               </label>
 
               <select
@@ -1365,22 +1320,14 @@ function Eligibility() {
                 onChange={(event) => setCategory(event.target.value)}
                 required
               >
-                <option value="Small business">Small business</option>
-                <option value="Entrepreneurship">Entrepreneurship</option>
-                <option value="Food Processing">Food processing</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Agriculture">Agriculture</option>
-                <option value="Retail">Retail</option>
-                <option value="Services">Services</option>
-                <option value="Women entrepreneur">
-                  Women entrepreneur
-                </option>
-                <option value="Other">Other</option>
+                {categories.map(([value, translationKey]) => (
+                  <option value={value} key={value}>
+                    {t(`eligibility.categories.${translationKey}`)}
+                  </option>
+                ))}
               </select>
 
-              <small>
-                Choose the category that best describes your business.
-              </small>
+              <small>{t("eligibility.categoryHelp")}</small>
             </div>
 
             <button
@@ -1389,58 +1336,41 @@ function Eligibility() {
               disabled={loading}
             >
               {loading ? (
-                "Finding potential matches..."
+                t("eligibility.finding")
               ) : (
                 <>
-                  Check my eligibility <span>→</span>
+                  {t("eligibility.checkButton")} <span>→</span>
                 </>
               )}
             </button>
 
             <p className="eligibility-form-note">
               <ShieldCheck size={15} />
-              Your answers are used to search available scheme records.
+              {t("eligibility.formNote")}
             </p>
           </form>
         </div>
 
         <aside className="eligibility-side-panel">
           <div className="eligibility-side-icon">✳</div>
-          <span className="eyebrow">HOW IT WORKS</span>
-          <h3>A simpler way to discover opportunities.</h3>
+          <span className="eyebrow">{t("eligibility.howItWorks")}</span>
+          <h3>{t("eligibility.sideTitle")}</h3>
 
           <div className="eligibility-steps">
-            <div className="eligibility-step">
-              <span>01</span>
-              <div>
-                <strong>Share your details</strong>
-                <p>Tell us your state and business category.</p>
+            {["share", "explore", "verify"].map((step, index) => (
+              <div className="eligibility-step" key={step}>
+                <span>0{index + 1}</span>
+                <div>
+                  <strong>{t(`eligibility.steps.${step}.title`)}</strong>
+                  <p>{t(`eligibility.steps.${step}.description`)}</p>
+                </div>
               </div>
-            </div>
-
-            <div className="eligibility-step">
-              <span>02</span>
-              <div>
-                <strong>Explore potential matches</strong>
-                <p>Review scheme records returned by the system.</p>
-              </div>
-            </div>
-
-            <div className="eligibility-step">
-              <span>03</span>
-              <div>
-                <strong>Verify before applying</strong>
-                <p>Check official programme guidelines and requirements.</p>
-              </div>
-            </div>
+            ))}
           </div>
 
           <div className="eligibility-side-note">
             <ShieldCheck size={17} />
-            <span>
-              Results are indicative and do not guarantee eligibility
-              or government approval.
-            </span>
+            <span>{t("eligibility.sideNote")}</span>
           </div>
         </aside>
       </div>
@@ -1449,10 +1379,13 @@ function Eligibility() {
         <div className="eligibility-results" aria-live="polite">
           <div className="eligibility-results-heading">
             <div>
-              <span className="eyebrow">YOUR ASSESSMENT</span>
-              <h2>Potential scheme matches</h2>
+              <span className="eyebrow">{t("eligibility.assessment")}</span>
+              <h2>{t("eligibility.matchesTitle")}</h2>
               <p>
-                Results for {category} in {state}.
+               {t("eligibility.resultsFor")}{" "}
+               {t(`eligibility.categories.${selectedCategoryKey}`)}{" "}
+               {t("eligibility.in")}{" "}
+               {t(`eligibility.states.${state}`)}.
               </p>
             </div>
 
@@ -1461,13 +1394,13 @@ function Eligibility() {
               className="eligibility-reset"
               onClick={reset}
             >
-              Start again ↗
+              {t("eligibility.startAgain")} ↗
             </button>
           </div>
 
           {result.error ? (
             <div className="eligibility-error">
-              <strong>Assessment unavailable</strong>
+              <strong>{t("eligibility.unavailable")}</strong>
               <p>{result.error}</p>
             </div>
           ) : (
@@ -1475,8 +1408,7 @@ function Eligibility() {
               <div className="eligibility-result-notice">
                 <ShieldCheck size={19} />
                 <p>
-                  {result.disclaimer ||
-                    "These are potential matches based on the details provided. Confirm eligibility with the official scheme authority."}
+                  {result.disclaimer || t("eligibility.resultDisclaimer")}
                 </p>
               </div>
 
@@ -1490,14 +1422,14 @@ function Eligibility() {
                       <div className="match-card-top">
                         <span className="match-icon">✳</span>
                         <span className="match-label">
-                          Potential match
+                          {t("eligibility.potentialMatch")}
                         </span>
                       </div>
 
                       <h3>{match.name}</h3>
 
                       <div className="match-reason">
-                        <strong>Why it appeared</strong>
+                        <strong>{t("eligibility.whyAppeared")}</strong>
                         <p>{match.reason}</p>
                       </div>
 
@@ -1505,7 +1437,7 @@ function Eligibility() {
                         to={`/schemes/${match.id}`}
                         className="match-view-link"
                       >
-                        Explore scheme <span>→</span>
+                        {t("eligibility.exploreScheme")} <span>→</span>
                       </Link>
                     </article>
                   ))}
@@ -1513,18 +1445,14 @@ function Eligibility() {
               ) : (
                 <div className="eligibility-no-matches">
                   <span>⌕</span>
-                  <h3>No potential matches found</h3>
-                  <p>
-                    No matching scheme records were returned for these
-                    details. You can try another business category or
-                    state.
-                  </p>
+                  <h3>{t("eligibility.noMatches")}</h3>
+                  <p>{t("eligibility.noMatchesDescription")}</p>
                   <button
                     type="button"
                     className="button secondary"
                     onClick={reset}
                   >
-                    Try another search
+                    {t("eligibility.tryAgain")}
                   </button>
                 </div>
               )}
@@ -1537,12 +1465,16 @@ function Eligibility() {
 }
 
 
+
 // ==========================================
 // AI ASSISTANT
 // ==========================================
 
 
+
 function Assistant() {
+  const { t, i18n } = useTranslation();
+
   const [message, setMessage] = useState("");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -1550,17 +1482,16 @@ function Assistant() {
   const [loading, setLoading] = useState(false);
 
   const suggestions = [
-    "How can I find government schemes for my small business?",
-    "How do digital payments help small businesses?",
-    "How can I promote my business online?",
-    "How can I protect my business from online fraud?",
+    t("assistant.suggestion1"),
+    t("assistant.suggestion2"),
+    t("assistant.suggestion3"),
+    t("assistant.suggestion4"),
   ];
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
 
     const currentMessage = message.trim();
-
     if (!currentMessage || loading) return;
 
     setQuestion(currentMessage);
@@ -1572,16 +1503,16 @@ function Assistant() {
     try {
       const response = await api.post("/api/assistant/chat", {
         message: currentMessage,
-        language: "en",
+        language: i18n.language,
       });
 
       setAnswer(
-        response.data.answer || "No response was returned. Please try again."
+        response.data.answer || t("assistant.noResponse")
       );
       setMode(response.data.mode || "SCHEMETA Assistant");
     } catch {
-      setAnswer("The assistant service is currently unavailable. Please try again.");
-      setMode("Service unavailable");
+      setAnswer(t("assistant.serviceUnavailable"));
+      setMode(t("assistant.unavailable"));
     } finally {
       setLoading(false);
     }
@@ -1601,24 +1532,21 @@ function Assistant() {
         <div className="assistant-hero-copy">
           <span className="eyebrow">
             <span className="live-dot" />
-            SCHEMETA · AI ASSISTANT
+            {t("assistant.eyebrow")}
           </span>
 
           <h1>
-            Your business questions.
+            {t("assistant.heroTitle")}
             <br />
-            <em>Clearer answers.</em>
+            <em>{t("assistant.heroSubtitle")}</em>
           </h1>
 
-          <p>
-            Get help exploring government schemes, understanding digital
-            tools and building confidence in your business journey.
-          </p>
+          <p>{t("assistant.heroDescription")}</p>
 
           <div className="assistant-hero-points">
-            <span>✓ Scheme discovery</span>
-            <span>✓ Digital business guidance</span>
-            <span>✓ Practical answers</span>
+            <span>✓ {t("assistant.point1")}</span>
+            <span>✓ {t("assistant.point2")}</span>
+            <span>✓ {t("assistant.point3")}</span>
           </div>
         </div>
 
@@ -1628,15 +1556,15 @@ function Assistant() {
 
           <div className="assistant-visual-center">
             <span>✳</span>
-            <strong>Ask away</strong>
-            <small>Your business companion</small>
+            <strong>{t("assistant.askAway")}</strong>
+            <small>{t("assistant.companion")}</small>
           </div>
 
           <div className="assistant-floating-note">
             <span>✦</span>
             <div>
-              <b>Here to help</b>
-              <small>One question at a time</small>
+              <b>{t("assistant.hereToHelp")}</b>
+              <small>{t("assistant.oneQuestion")}</small>
             </div>
           </div>
         </div>
@@ -1650,7 +1578,7 @@ function Assistant() {
 
           <div>
             <strong>SCHEMETA Assistant</strong>
-            <span>Business guidance and learning support</span>
+            <span>{t("assistant.chatDescription")}</span>
           </div>
 
           <button
@@ -1658,7 +1586,7 @@ function Assistant() {
             className="assistant-new-chat"
             onClick={startNewChat}
           >
-            ↻ New chat
+            ↻ {t("assistant.newChat")}
           </button>
         </div>
 
@@ -1669,12 +1597,8 @@ function Assistant() {
                 <Sparkles size={27} />
               </div>
 
-              <h2>How can I help you today?</h2>
-
-              <p>
-                Ask a question or choose one of the suggestions below
-                to get started.
-              </p>
+              <h2>{t("assistant.welcomeTitle")}</h2>
+              <p>{t("assistant.welcomeDescription")}</p>
 
               <div className="assistant-suggestions">
                 {suggestions.map((suggestion) => (
@@ -1698,7 +1622,7 @@ function Assistant() {
                 </div>
 
                 <div className="assistant-message-content">
-                  <span>You</span>
+                  <span>{t("assistant.you")}</span>
                   <p>{question}</p>
                 </div>
               </div>
@@ -1715,7 +1639,7 @@ function Assistant() {
                       <i />
                       <i />
                       <i />
-                      <small>Preparing your answer...</small>
+                      <small>{t("assistant.preparing")}</small>
                     </div>
                   </div>
                 </div>
@@ -1731,9 +1655,7 @@ function Assistant() {
                       {mode && <small>{mode}</small>}
                     </div>
 
-                    <div className="assistant-answer">
-                      {answer}
-                    </div>
+                    <div className="assistant-answer">{answer}</div>
                   </div>
                 </div>
               )}
@@ -1745,7 +1667,7 @@ function Assistant() {
           <textarea
             value={message}
             onChange={(event) => setMessage(event.target.value)}
-            placeholder="Ask about schemes, business growth, digital payments..."
+            placeholder={t("assistant.placeholder")}
             rows={2}
             required
             disabled={loading}
@@ -1754,7 +1676,7 @@ function Assistant() {
           <div className="assistant-composer-bottom">
             <span>
               <ShieldCheck size={14} />
-              Verify important information with official sources.
+              {t("assistant.verifyNotice")}
             </span>
 
             <button
@@ -1762,7 +1684,7 @@ function Assistant() {
               type="submit"
               disabled={loading || !message.trim()}
             >
-              {loading ? "Thinking..." : "Send question"}
+              {loading ? t("assistant.thinking") : t("assistant.send")}
               <ArrowRight size={16} />
             </button>
           </div>
@@ -1771,15 +1693,12 @@ function Assistant() {
 
       <div className="assistant-disclaimer">
         <ShieldCheck size={17} />
-        <p>
-          SCHEMETA Assistant provides informational guidance. It does
-          not replace official government advice or guarantee scheme
-          eligibility.
-        </p>
+        <p>{t("assistant.disclaimer")}</p>
       </div>
     </section>
   );
 }
+
 
 
 // ==========================================
@@ -1787,7 +1706,10 @@ function Assistant() {
 // ==========================================
 
 
+
 function Community() {
+  const { t } = useTranslation();
+
   const [posts, setPosts] = useState<any[]>([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -1826,7 +1748,7 @@ function Community() {
       setBody("");
       load();
     } catch {
-      alert("Please log in before creating a post.");
+      alert(t("community.loginRequired"));
     } finally {
       setPublishing(false);
     }
@@ -1836,39 +1758,38 @@ function Community() {
     <section className="page community-page">
       <div className="community-hero">
         <div className="community-hero-content">
-          <span className="eyebrow">SCHEMETA COMMUNITY</span>
-          <h1>Ideas grow better when we share them.</h1>
-          <p>
-            Connect with entrepreneurs, exchange experiences, ask questions
-            and learn from people building businesses just like yours.
-          </p>
+          <span className="eyebrow">{t("community.eyebrow")}</span>
+          <h1>{t("community.heroTitle")}</h1>
+          <p>{t("community.heroDescription")}</p>
 
           <div className="community-hero-stats">
             <div>
               <strong>{posts.length}</strong>
-              <span>Community discussions</span>
+              <span>{t("community.discussions")}</span>
             </div>
             <div>
-              <strong>One goal</strong>
-              <span>Grow together</span>
+              <strong>{t("community.oneGoal")}</strong>
+              <span>{t("community.growTogether")}</span>
             </div>
           </div>
         </div>
 
         <div className="community-hero-visual">
           <div className="community-visual-icon">✦</div>
-          <h3>Share knowledge.</h3>
-          <h3>Build connections.</h3>
-          <p>Your next great idea could start with a conversation.</p>
-          <div className="community-visual-decoration">COMMUNITY · GROWTH · IDEAS</div>
+          <h3>{t("community.shareKnowledge")}</h3>
+          <h3>{t("community.buildConnections")}</h3>
+          <p>{t("community.visualDescription")}</p>
+          <div className="community-visual-decoration">
+            {t("community.visualDecoration")}
+          </div>
         </div>
       </div>
 
       <div className="community-section-heading">
         <div>
-          <span className="eyebrow">START A CONVERSATION</span>
-          <h2>Share with the community</h2>
-          <p>Have a question, experience or idea? Let others learn from it.</p>
+          <span className="eyebrow">{t("community.startConversation")}</span>
+          <h2>{t("community.shareTitle")}</h2>
+          <p>{t("community.shareDescription")}</p>
         </div>
       </div>
 
@@ -1876,63 +1797,67 @@ function Community() {
         <div className="community-composer-top">
           <div className="community-avatar">S</div>
           <div>
-            <strong>Start a new discussion</strong>
-            <span>Share something useful with fellow entrepreneurs</span>
+            <strong>{t("community.newDiscussion")}</strong>
+            <span>{t("community.newDiscussionDescription")}</span>
           </div>
         </div>
 
-        <label htmlFor="community-title">Discussion title</label>
+        <label htmlFor="community-title">
+          {t("community.discussionTitle")}
+        </label>
         <input
           id="community-title"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="What would you like to discuss?"
+          placeholder={t("community.titlePlaceholder")}
           maxLength={150}
           required
         />
 
-        <label htmlFor="community-body">Your message</label>
+        <label htmlFor="community-body">{t("community.yourMessage")}</label>
         <textarea
           id="community-body"
           value={body}
           onChange={(event) => setBody(event.target.value)}
-          placeholder="Share your thoughts, ask a question or tell us about your experience..."
+          placeholder={t("community.messagePlaceholder")}
           rows={5}
           required
         />
 
         <div className="community-composer-footer">
-          <span>Posting in General discussion</span>
+          <span>{t("community.postingCategory")}</span>
           <button className="button" type="submit" disabled={publishing}>
-            {publishing ? "Publishing..." : "Publish discussion"}
+            {publishing
+              ? t("community.publishing")
+              : t("community.publish")}
           </button>
         </div>
       </form>
 
       <div className="community-feed-heading">
         <div>
-          <span className="eyebrow">THE COMMUNITY</span>
-          <h2>Recent discussions</h2>
+          <span className="eyebrow">{t("community.theCommunity")}</span>
+          <h2>{t("community.recentDiscussions")}</h2>
         </div>
         <span className="community-post-count">
-          {posts.length} {posts.length === 1 ? "post" : "posts"}
+          {posts.length}{" "}
+          {posts.length === 1
+            ? t("community.post")
+            : t("community.posts")}
         </span>
       </div>
 
       {loading ? (
         <div className="community-empty">
           <div className="community-empty-icon">◌</div>
-          <h3>Loading discussions...</h3>
-          <p>Fetching the latest conversations from the community.</p>
+          <h3>{t("community.loading")}</h3>
+          <p>{t("community.loadingDescription")}</p>
         </div>
       ) : posts.length === 0 ? (
         <div className="community-empty">
           <div className="community-empty-icon">✦</div>
-          <h3>Be the first to start a conversation</h3>
-          <p>
-            There are no discussions yet. Share your first idea and help build
-            the SCHEMETA community.
-          </p>
+          <h3>{t("community.firstConversation")}</h3>
+          <p>{t("community.noDiscussions")}</p>
         </div>
       ) : (
         <div className="community-post-list">
@@ -1943,8 +1868,8 @@ function Community() {
                   {(post.author || "E").charAt(0).toUpperCase()}
                 </div>
                 <div className="community-post-author">
-                  <strong>{post.author || "Community member"}</strong>
-                  <span>Entrepreneur community</span>
+                  <strong>{post.author || t("community.member")}</strong>
+                  <span>{t("community.entrepreneurCommunity")}</span>
                 </div>
                 <span className="community-category">
                   {post.category || "General"}
@@ -1955,7 +1880,7 @@ function Community() {
               <p className="community-post-body">{post.body}</p>
 
               <div className="community-post-footer">
-                <span>✦ Shared with the SCHEMETA community</span>
+                <span>✦ {t("community.sharedWithCommunity")}</span>
               </div>
             </article>
           ))}
@@ -1964,6 +1889,7 @@ function Community() {
     </section>
   );
 }
+
 
 
 // ==========================================

@@ -48,15 +48,19 @@ def list_schemes(search: str = "", category: str = "", db: Session = Depends(get
         stmt = stmt.where(Scheme.category == category)
     return list(db.scalars(stmt.order_by(Scheme.name).limit(100)))
 
-@router.get("/schemes/{scheme_id}", response_model=SchemeOut)
-def scheme_detail(scheme_id: int, db: Session = Depends(get_db)):
-    item = db.get(Scheme, scheme_id)
-    if not item: raise HTTPException(404, "Scheme not found")
-    return item
 
 @router.get("/schemes/saved", response_model=list[SchemeOut])
 def saved_schemes(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     return list(db.scalars(select(Scheme).join(SavedScheme).where(SavedScheme.user_id == user.id)))
+
+
+@router.get("/schemes/{scheme_id}", response_model=SchemeOut)
+def scheme_detail(scheme_id: int, db: Session = Depends(get_db)):
+    item = db.get(Scheme, scheme_id)
+    if not item:
+        raise HTTPException(404, "Scheme not found")
+    return item
+
 
 @router.post("/schemes/{scheme_id}/save")
 def save_scheme(scheme_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):

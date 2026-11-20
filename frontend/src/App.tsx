@@ -2003,8 +2003,11 @@ function AuthPage({
 // ==========================================
 
 
+
 function Dashboard() {
+  const { t } = useTranslation();
   const { user, token } = useAuth();
+
   const [saved, setSaved] = useState<Scheme[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -2030,27 +2033,24 @@ function Dashboard() {
         <div className="dashboard-welcome-copy">
           <span className="eyebrow">
             <span className="live-dot" />
-            YOUR ENTREPRENEUR WORKSPACE
+            {t("dashboard.eyebrow")}
           </span>
 
           <h1>
-            Welcome back,
+            {t("dashboard.welcomeBack")}
             <br />
-            <em>{user?.name || "Entrepreneur"}.</em>
+            <em>{user?.name || t("dashboard.entrepreneur")}.</em>
           </h1>
 
-          <p>
-            Your opportunities, saved schemes and business learning
-            journey — all in one place.
-          </p>
+          <p>{t("dashboard.description")}</p>
 
           <div className="dashboard-welcome-actions">
             <Link to="/schemes" className="button">
-              Explore schemes <ArrowRight size={16} />
+              {t("dashboard.exploreSchemes")} <ArrowRight size={16} />
             </Link>
 
             <Link to="/profile" className="button secondary">
-              Edit profile
+              {t("dashboard.editProfile")}
             </Link>
           </div>
         </div>
@@ -2061,15 +2061,15 @@ function Dashboard() {
 
           <div className="dashboard-art-center">
             <span>✳</span>
-            <strong>Grow</strong>
-            <small>One step at a time</small>
+            <strong>{t("dashboard.grow")}</strong>
+            <small>{t("dashboard.oneStep")}</small>
           </div>
 
           <div className="dashboard-art-note">
             <span>✓</span>
             <div>
-              <b>Your journey</b>
-              <small>Starts here</small>
+              <b>{t("dashboard.yourJourney")}</b>
+              <small>{t("dashboard.startsHere")}</small>
             </div>
           </div>
         </div>
@@ -2077,8 +2077,8 @@ function Dashboard() {
 
       <div className="dashboard-section-heading">
         <div>
-          <span className="eyebrow">YOUR OVERVIEW</span>
-          <h2>Your workspace at a glance</h2>
+          <span className="eyebrow">{t("dashboard.overview")}</span>
+          <h2>{t("dashboard.workspaceAtGlance")}</h2>
         </div>
       </div>
 
@@ -2089,9 +2089,9 @@ function Dashboard() {
           </div>
           <div>
             <strong>{loading ? "—" : saved.length}</strong>
-            <span>Saved schemes</span>
+            <span>{t("dashboard.savedSchemes")}</span>
           </div>
-          <small>Opportunities you bookmarked</small>
+          <small>{t("dashboard.bookmarkedDescription")}</small>
         </div>
 
         <div className="dashboard-stat-card">
@@ -2100,11 +2100,11 @@ function Dashboard() {
           </div>
           <div>
             <strong className="dashboard-stat-text">
-              {user?.district || "Not added"}
+              {user?.district || t("dashboard.notAdded")}
             </strong>
-            <span>Your district</span>
+            <span>{t("dashboard.yourDistrict")}</span>
           </div>
-          <small>Your profile location</small>
+          <small>{t("dashboard.profileLocation")}</small>
         </div>
 
         <div className="dashboard-stat-card">
@@ -2113,29 +2113,29 @@ function Dashboard() {
           </div>
           <div>
             <strong className="dashboard-stat-text">
-              {user?.preferred_language || "English"}
+              {user?.preferred_language || t("dashboard.english")}
             </strong>
-            <span>Preferred language</span>
+            <span>{t("dashboard.preferredLanguage")}</span>
           </div>
-          <small>Your learning preference</small>
+          <small>{t("dashboard.learningPreference")}</small>
         </div>
       </div>
 
       <div className="dashboard-content-heading">
         <div>
-          <span className="eyebrow">YOUR COLLECTION</span>
-          <h2>Saved schemes</h2>
-          <p>Return to the opportunities you want to explore.</p>
+          <span className="eyebrow">{t("dashboard.collection")}</span>
+          <h2>{t("dashboard.savedSchemes")}</h2>
+          <p>{t("dashboard.savedDescription")}</p>
         </div>
 
         <Link to="/schemes" className="dashboard-view-all">
-          Explore all schemes <ArrowRight size={15} />
+          {t("dashboard.exploreAll")} <ArrowRight size={15} />
         </Link>
       </div>
 
       {loading ? (
         <div className="dashboard-empty">
-          <p>Loading your saved schemes...</p>
+          <p>{t("dashboard.loadingSaved")}</p>
         </div>
       ) : saved.length > 0 ? (
         <div className="dashboard-saved-grid">
@@ -2159,7 +2159,7 @@ function Dashboard() {
               <p>{scheme.summary}</p>
 
               <div className="dashboard-saved-footer">
-                <span>View scheme details</span>
+                <span>{t("dashboard.viewDetails")}</span>
                 <ArrowRight size={17} />
               </div>
             </Link>
@@ -2171,15 +2171,12 @@ function Dashboard() {
             <Compass size={27} />
           </div>
 
-          <h3>Your saved schemes will appear here</h3>
+          <h3>{t("dashboard.noSavedTitle")}</h3>
 
-          <p>
-            Explore government scheme records and save the ones
-            you want to revisit later.
-          </p>
+          <p>{t("dashboard.noSavedDescription")}</p>
 
           <Link to="/schemes" className="button">
-            Discover schemes <ArrowRight size={16} />
+            {t("dashboard.discoverSchemes")} <ArrowRight size={16} />
           </Link>
         </div>
       )}
@@ -2187,9 +2184,9 @@ function Dashboard() {
       <div className="dashboard-quick-section">
         <div className="dashboard-content-heading">
           <div>
-            <span className="eyebrow">KEEP MOVING FORWARD</span>
-            <h2>Quick actions</h2>
-            <p>Continue exploring the SCHEMETA platform.</p>
+            <span className="eyebrow">{t("dashboard.keepMoving")}</span>
+            <h2>{t("dashboard.quickActions")}</h2>
+            <p>{t("dashboard.quickDescription")}</p>
           </div>
         </div>
 
@@ -2197,8 +2194,8 @@ function Dashboard() {
           <Link to="/schemes" className="dashboard-quick-card">
             <span className="quick-icon"><Compass size={21} /></span>
             <div>
-              <strong>Explore schemes</strong>
-              <p>Discover government support opportunities.</p>
+              <strong>{t("dashboard.exploreSchemes")}</strong>
+              <p>{t("dashboard.exploreSchemesDescription")}</p>
             </div>
             <ArrowRight size={17} />
           </Link>
@@ -2206,8 +2203,8 @@ function Dashboard() {
           <Link to="/eligibility" className="dashboard-quick-card">
             <span className="quick-icon"><ShieldCheck size={21} /></span>
             <div>
-              <strong>Check eligibility</strong>
-              <p>Find potentially relevant scheme records.</p>
+              <strong>{t("dashboard.checkEligibility")}</strong>
+              <p>{t("dashboard.eligibilityDescription")}</p>
             </div>
             <ArrowRight size={17} />
           </Link>
@@ -2215,8 +2212,8 @@ function Dashboard() {
           <Link to="/academy" className="dashboard-quick-card">
             <span className="quick-icon"><BookOpen size={21} /></span>
             <div>
-              <strong>Visit the academy</strong>
-              <p>Build practical digital business skills.</p>
+              <strong>{t("dashboard.visitAcademy")}</strong>
+              <p>{t("dashboard.academyDescription")}</p>
             </div>
             <ArrowRight size={17} />
           </Link>
@@ -2224,8 +2221,8 @@ function Dashboard() {
           <Link to="/profile" className="dashboard-quick-card">
             <span className="quick-icon"><Globe2 size={21} /></span>
             <div>
-              <strong>Update your profile</strong>
-              <p>Manage your personal preferences.</p>
+              <strong>{t("dashboard.updateProfile")}</strong>
+              <p>{t("dashboard.profileDescription")}</p>
             </div>
             <ArrowRight size={17} />
           </Link>
@@ -2234,14 +2231,12 @@ function Dashboard() {
 
       <div className="dashboard-footer-note">
         <ShieldCheck size={18} />
-        <p>
-          Always verify scheme details and eligibility with the
-          respective official government authority before applying.
-        </p>
+        <p>{t("dashboard.footerNote")}</p>
       </div>
     </section>
   );
 }
+
 
 
 // ==========================================
